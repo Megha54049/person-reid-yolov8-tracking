@@ -1,0 +1,41 @@
+# Python virtual environment
+reid_env/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# YOLOv8 outputs
+runs/
+outputs/
+
+# Large model files
+weights/
+*.pt
+*.pth
+*.onnx
+
+# Large data files
+annotated_data/
+Input_file/
+*.mp4
+*.avi
+*.mov
+*.pkl
+
+# IDE
+.vscode/
+.vscode-server/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+.wget-hsts
+
+# Temporary files
+*.log
+*.tmp
+.vscode-server/

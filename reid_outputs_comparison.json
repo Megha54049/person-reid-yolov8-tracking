@@ -1,0 +1,226 @@
+{
+  "project_info": {
+    "project_name": "Person Re-Identification System",
+    "dataset": "477 frames staircase video",
+    "date": "2026-02-04",
+    "buffer_size": 100,
+    "model": "YOLOv8 Medium",
+    "model_performance": {
+      "precision": 0.995,
+      "recall": 1.0,
+      "mAP50": 0.995,
+      "mAP50_95": 0.789
+    }
+  },
+  "outputs": [
+    {
+      "output_id": 1,
+      "filename": "output_person_reid_477frames.mp4",
+      "size_mb": 20,
+      "creation_date": "2026-02-04T08:46:00",
+      "configuration": {
+        "similarity_threshold": 0.65,
+        "re_entry_threshold": null,
+        "adaptive_threshold": false
+      },
+      "results": {
+        "global_ids_created": 1,
+        "reid_matches": 2,
+        "match_details": [
+          {
+            "frame": 150,
+            "similarity": 0.830,
+            "matched_id": 1
+          },
+          {
+            "frame": 210,
+            "similarity": 0.667,
+            "matched_id": 1
+          }
+        ],
+        "id_switches": 0,
+        "avg_similarity": 0.7485,
+        "processing_fps": 4.4,
+        "total_frames": 477,
+        "total_detections": 431,
+        "total_tracks": 631
+      },
+      "status": "GOOD",
+      "user_confirmed": true,
+      "notes": "First run with basic threshold. Correctly identified 1 person throughout video."
+    },
+    {
+      "output_id": 2,
+      "filename": "output_fixed.mp4",
+      "size_mb": 20,
+      "creation_date": "2026-02-04T08:50:00",
+      "configuration": {
+        "similarity_threshold": 0.85,
+        "re_entry_threshold": null,
+        "adaptive_threshold": false
+      },
+      "results": {
+        "global_ids_created": 3,
+        "reid_matches": 0,
+        "match_details": [],
+        "id_switches": 0,
+        "avg_similarity": 0.0,
+        "processing_fps": 4.38,
+        "total_frames": 477,
+        "total_detections": 431,
+        "total_tracks": 631
+      },
+      "status": "OVER_SEGMENTED",
+      "user_confirmed": false,
+      "notes": "Threshold too strict (0.85). Created 3 IDs for same person. Failed to re-identify."
+    },
+    {
+      "output_id": 3,
+      "filename": "output_final_2people.mp4",
+      "size_mb": 20,
+      "creation_date": "2026-02-04T09:44:00",
+      "configuration": {
+        "similarity_threshold": 0.75,
+        "re_entry_threshold": 0.65,
+        "adaptive_threshold": true,
+        "temporal_window": 100,
+        "multi_embedding_comparison": true,
+        "recent_embeddings_count": 10
+      },
+      "results": {
+        "global_ids_created": 1,
+        "reid_matches": 2,
+        "match_details": [
+          {
+            "frame": 150,
+            "similarity": 0.830,
+            "centroid_similarity": 0.830,
+            "matched_id": 1,
+            "threshold_used": 0.75
+          },
+          {
+            "frame": 210,
+            "similarity": 0.667,
+            "centroid_similarity": 0.667,
+            "matched_id": 1,
+            "threshold_used": 0.65,
+            "re_entry_mode": true
+          }
+        ],
+        "id_switches": 0,
+        "avg_similarity": 0.7486,
+        "processing_fps": 4.40,
+        "total_frames": 477,
+        "total_detections": 431,
+        "total_tracks": 631
+      },
+      "status": "OPTIMAL",
+      "user_confirmed": true,
+      "notes": "Improved system with adaptive thresholds and multi-embedding comparison. Same correct result as first run but with better logic."
+    }
+  ],
+  "comparison_summary": {
+    "correct_outputs": [
+      "output_person_reid_477frames.mp4",
+      "output_final_2people.mp4"
+    ],
+    "incorrect_outputs": [
+      "output_fixed.mp4"
+    ],
+    "ground_truth": {
+      "unique_persons": 1,
+      "person_timeline": [
+        {
+          "person_id": 1,
+          "appearances": [
+            {
+              "start_frame": 1,
+              "end_frame": 150,
+              "notes": "First appearance"
+            },
+            {
+              "start_frame": 150,
+              "end_frame": 210,
+              "notes": "Re-entry after brief departure"
+            },
+            {
+              "start_frame": 210,
+              "end_frame": 477,
+              "notes": "Final appearance through end"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "improvements_made": {
+    "issue_1": {
+      "problem": "JSON serialization error with numpy float32 types",
+      "solution": "Added convert_to_json_serializable() function",
+      "status": "FIXED"
+    },
+    "issue_2": {
+      "problem": "Over-segmentation (threshold too strict at 0.85)",
+      "solution": "Lowered standard threshold to 0.75, added re-entry threshold 0.65",
+      "status": "FIXED"
+    },
+    "issue_3": {
+      "problem": "Single threshold not handling re-entries well",
+      "solution": "Implemented adaptive threshold based on temporal proximity",
+      "status": "FIXED"
+    },
+    "issue_4": {
+      "problem": "Centroid-only comparison not robust enough",
+      "solution": "Added multi-embedding comparison (last 10 embeddings)",
+      "status": "FIXED"
+    }
+  },
+  "final_system_features": {
+    "detection": {
+      "model": "YOLOv8 Medium (25.8M parameters)",
+      "trained_on": "477 frames + 50 validation frames",
+      "precision": 0.995,
+      "confidence_threshold": 0.3
+    },
+    "tracking": {
+      "method": "IoU-based tracking",
+      "iou_threshold": 0.3,
+      "buffer_size": 100
+    },
+    "reid": {
+      "feature_extractor": "ResNet50 (2048-dim)",
+      "similarity_metric": "Cosine similarity",
+      "standard_threshold": 0.75,
+      "re_entry_threshold": 0.65,
+      "temporal_window_seconds": 5,
+      "embedding_buffer_size": 100,
+      "comparison_method": "Multi-embedding + centroid"
+    },
+    "identity_management": {
+      "buffer_size": 100,
+      "centroid_update": "Exponential moving average (EMA)",
+      "ema_alpha": 0.4,
+      "id_switches": 0,
+      "consistency": "100%"
+    }
+  },
+  "output_files": {
+    "videos": [
+      "output_person_reid_477frames.mp4",
+      "output_fixed.mp4",
+      "output_final_2people.mp4"
+    ],
+    "identity_databases": [
+      "identity_memory.pkl"
+    ],
+    "statistics": [
+      "processing_statistics.json"
+    ],
+    "models": [
+      "runs/detect/runs/detect/yolov8_477frames/weights/best.pt"
+    ],
+    "summaries": [
+      "system_summary.txt"
+    ]
+  }
+}

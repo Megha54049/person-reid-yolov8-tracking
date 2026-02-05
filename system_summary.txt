@@ -1,0 +1,18 @@
+============================================================
+PERSON REID SYSTEM SUMMARY - 477 FRAMES
+============================================================
+
+VIDEO PROCESSING:
+----------------------------------------
+Total frames processed: 477
+Total processing time: 110.09s
+Average FPS: 4.33
+
+IDENTITY SYSTEM:
+----------------------------------------
+Global identities created: 1
+Buffer size: 100
+
+============================================================
+SYSTEM EXECUTION COMPLETE
+============================================================

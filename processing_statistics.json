@@ -1,0 +1,37 @@
+{
+  "system_info": {
+    "total_frames_dataset": 477,
+    "buffer_size": 100,
+    "device": "cpu",
+    "processing_date": "2026-02-04T11:19:47.425270"
+  },
+  "video_processing": {
+    "total_frames": 477,
+    "processing_time": 110.08767557144165,
+    "average_fps": 4.33291008756425,
+    "min_frame_time": 0.14587640762329102,
+    "max_frame_time": 0.3116772174835205,
+    "avg_frame_time": 0.216516178858855,
+    "global_identities": 1,
+    "total_detections": 431,
+    "total_tracks": 631,
+    "id_switches": 0,
+    "reid_stats": {
+      "total_queries": 2,
+      "matches_found": 2,
+      "new_identities": 1,
+      "avg_similarity": 0.7486335635185242
+    },
+    "output_video": "output_final_reid.mp4"
+  },
+  "identity_system": {
+    "total_identities": 1,
+    "match_stats": {
+      "total_queries": 2,
+      "matches_found": 2,
+      "new_identities": 1,
+      "avg_similarity": 0.7486335635185242
+    },
+    "id_switches": 0
+  }
+}

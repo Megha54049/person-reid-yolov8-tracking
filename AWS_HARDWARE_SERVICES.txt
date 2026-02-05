@@ -1,0 +1,74 @@
+================================================================================
+                  AWS DEPLOYMENT - HARDWARE & SERVICES
+================================================================================
+
+GPU HARDWARE (g4dn.xlarge)
+--------------------------------------------------------------------------------
+• NVIDIA T4 GPU (16GB VRAM)     - For fast inference
+• 4 vCPUs                       - For video processing
+• 16GB RAM                      - For video processing
+• 125GB SSD                     - For model storage
+
+COST: $230/month (Reserved 1-year) or $384/month (On-Demand)
+
+
+STORAGE
+--------------------------------------------------------------------------------
+EBS (SSD):
+• Cost: $0.08/GB/month
+• Purpose: Fast model access, working directory
+• Recommended: 100-350GB
+
+S3:
+• Cost: $0.023/GB/month  
+• Purpose: Video archive, backups
+• Recommended: 100-500GB
+
+
+MODELS (ALREADY TRAINED - FREE)
+--------------------------------------------------------------------------------
+• YOLOv8 best.pt: 50MB          - FREE (you own it)
+• ResNet50: 98MB                - FREE (open source)
+• Identity DB: ~50MB/1000 people - FREE (your data)
+
+TOTAL MODEL SIZE: ~150MB (negligible cost)
+
+
+AWS SERVICES
+--------------------------------------------------------------------------------
+CloudWatch:
+• Cost: ~$10/month
+• Purpose: Monitoring, logs, alerts
+
+Load Balancer:
+• Cost: ~$16/month
+• Purpose: Distribute requests across instances
+
+API Gateway:
+• Cost: ~$4/month
+• Purpose: REST API for video uploads
+
+Lambda (Optional):
+• Cost: ~$5/month
+• Purpose: Trigger processing workflows
+
+Data Transfer:
+• Cost: $0.09/GB
+• Purpose: Downloading processed videos
+• First 100GB/month: FREE
+
+
+TOTAL MONTHLY COST ESTIMATE
+--------------------------------------------------------------------------------
+Compute (g4dn.xlarge Reserved): $230
+Storage (EBS 350GB):             $28
+Storage (S3 500GB):              $12
+CloudWatch:                      $10
+Load Balancer:                   $16
+API Gateway:                      $4
+Lambda:                           $5
+Data Transfer (100GB):            $9
+----------------------------------------
+TOTAL:                          $314/month
+
+================================================================================

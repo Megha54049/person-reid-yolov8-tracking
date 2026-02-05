@@ -1,0 +1,525 @@
+{
+  "project": "Person Re-Identification System - AWS Deployment",
+  "date": "2026-02-04",
+  "deployment_overview": {
+    "description": "Production-ready Person ReID system with YOLOv8 + ResNet50",
+    "processing_speed_current": "4.4 FPS on CPU",
+    "processing_speed_gpu": "20-30 FPS on GPU (estimated)",
+    "model_size": "75.8 MB total",
+    "recommended_platform": "AWS"
+  },
+
+  "aws_compute_options": {
+    "option_1_budget": {
+      "name": "Cost-Effective GPU Instance",
+      "instance_type": "g4dn.xlarge",
+      "gpu": "NVIDIA T4 (16GB)",
+      "vcpu": 4,
+      "ram_gb": 16,
+      "storage_gb": 125,
+      "pricing": {
+        "on_demand_hourly": "$0.526",
+        "on_demand_monthly": "$384",
+        "spot_hourly": "$0.158 - $0.300",
+        "spot_monthly": "$115 - $220",
+        "reserved_1yr": "$0.315/hr ($230/month)",
+        "reserved_3yr": "$0.189/hr ($138/month)"
+      },
+      "performance": {
+        "fps_expected": "20-25 FPS",
+        "concurrent_videos": "1-2",
+        "frames_per_hour": "72,000 - 90,000"
+      },
+      "recommended_for": "Development, testing, low-volume production"
+    },
+    
+    "option_2_balanced": {
+      "name": "Balanced Performance GPU",
+      "instance_type": "g4dn.2xlarge",
+      "gpu": "NVIDIA T4 (16GB)",
+      "vcpu": 8,
+      "ram_gb": 32,
+      "storage_gb": 225,
+      "pricing": {
+        "on_demand_hourly": "$0.752",
+        "on_demand_monthly": "$549",
+        "spot_hourly": "$0.226 - $0.450",
+        "spot_monthly": "$165 - $330",
+        "reserved_1yr": "$0.451/hr ($329/month)",
+        "reserved_3yr": "$0.270/hr ($197/month)"
+      },
+      "performance": {
+        "fps_expected": "25-30 FPS",
+        "concurrent_videos": "2-4",
+        "frames_per_hour": "90,000 - 108,000"
+      },
+      "recommended_for": "Production workloads, multiple streams"
+    },
+
+    "option_3_high_performance": {
+      "name": "High-Performance Multi-GPU",
+      "instance_type": "g4dn.12xlarge",
+      "gpu": "4x NVIDIA T4 (64GB total)",
+      "vcpu": 48,
+      "ram_gb": 192,
+      "storage_gb": 900,
+      "pricing": {
+        "on_demand_hourly": "$3.912",
+        "on_demand_monthly": "$2,856",
+        "spot_hourly": "$1.174 - $2.350",
+        "spot_monthly": "$857 - $1,715",
+        "reserved_1yr": "$2.347/hr ($1,713/month)",
+        "reserved_3yr": "$1.408/hr ($1,028/month)"
+      },
+      "performance": {
+        "fps_expected": "80-120 FPS",
+        "concurrent_videos": "8-16",
+        "frames_per_hour": "288,000 - 432,000"
+      },
+      "recommended_for": "Large-scale production, real-time multi-camera"
+    },
+
+    "option_4_cpu_only": {
+      "name": "CPU-Only (Current Setup)",
+      "instance_type": "c6i.2xlarge",
+      "gpu": "None",
+      "vcpu": 8,
+      "ram_gb": 16,
+      "storage_gb": 100,
+      "pricing": {
+        "on_demand_hourly": "$0.34",
+        "on_demand_monthly": "$248",
+        "spot_hourly": "$0.102 - $0.204",
+        "spot_monthly": "$74 - $149",
+        "reserved_1yr": "$0.204/hr ($149/month)",
+        "reserved_3yr": "$0.122/hr ($89/month)"
+      },
+      "performance": {
+        "fps_expected": "4-5 FPS",
+        "concurrent_videos": "1",
+        "frames_per_hour": "14,400 - 18,000"
+      },
+      "recommended_for": "Budget-constrained, non-real-time processing"
+    }
+  },
+
+  "storage_requirements": {
+    "ebs_volumes": {
+      "root_volume": {
+        "type": "gp3",
+        "size_gb": 100,
+        "iops": 3000,
+        "throughput_mbps": 125,
+        "monthly_cost": "$8.00",
+        "purpose": "OS, applications, code"
+      },
+      "model_storage": {
+        "type": "gp3",
+        "size_gb": 50,
+        "iops": 3000,
+        "throughput_mbps": 125,
+        "monthly_cost": "$4.00",
+        "purpose": "YOLOv8 weights, ReID models"
+      },
+      "data_volume": {
+        "type": "gp3",
+        "size_gb": 200,
+        "iops": 3000,
+        "throughput_mbps": 125,
+        "monthly_cost": "$16.00",
+        "purpose": "Video input/output, identity database"
+      },
+      "total_ebs_cost_monthly": "$28.00"
+    },
+
+    "s3_storage": {
+      "video_archive": {
+        "storage_class": "S3 Standard",
+        "estimated_gb_month": 500,
+        "cost_per_gb": "$0.023",
+        "monthly_cost": "$11.50",
+        "purpose": "Input videos, processed outputs"
+      },
+      "model_backup": {
+        "storage_class": "S3 Standard-IA",
+        "estimated_gb_month": 10,
+        "cost_per_gb": "$0.0125",
+        "monthly_cost": "$0.13",
+        "purpose": "Model weights backup"
+      },
+      "identity_database": {
+        "storage_class": "S3 Standard",
+        "estimated_gb_month": 5,
+        "cost_per_gb": "$0.023",
+        "monthly_cost": "$0.12",
+        "purpose": "Identity memory, embeddings"
+      },
+      "total_s3_cost_monthly": "$11.75"
+    },
+
+    "total_storage_monthly": "$39.75"
+  },
+
+  "additional_aws_services": {
+    "elastic_load_balancer": {
+      "service": "Application Load Balancer",
+      "monthly_cost": "$16.20",
+      "purpose": "Distribute video processing requests"
+    },
+    "cloudwatch": {
+      "service": "CloudWatch Logs + Metrics",
+      "monthly_cost": "$10.00",
+      "purpose": "Monitoring, logging, alerts"
+    },
+    "lambda": {
+      "service": "AWS Lambda (optional)",
+      "monthly_cost": "$5.00",
+      "purpose": "Trigger processing, manage workflows",
+      "invocations": 100000,
+      "compute_gb_seconds": 10000
+    },
+    "sagemaker": {
+      "service": "SageMaker Endpoint (optional)",
+      "instance": "ml.g4dn.xlarge",
+      "monthly_cost": "$384",
+      "purpose": "Managed model deployment",
+      "note": "Alternative to self-managed EC2"
+    },
+    "api_gateway": {
+      "service": "API Gateway REST API",
+      "monthly_cost": "$3.50",
+      "purpose": "REST API for video upload/processing",
+      "requests": 1000000
+    },
+    "data_transfer": {
+      "service": "Data Transfer Out",
+      "estimated_gb": 100,
+      "cost_per_gb": "$0.09",
+      "monthly_cost": "$9.00",
+      "purpose": "Downloading processed videos"
+    }
+  },
+
+  "deployment_architectures": {
+    "architecture_1_basic": {
+      "name": "Basic Single Instance",
+      "components": [
+        "1x g4dn.xlarge EC2 instance",
+        "EBS storage (350GB)",
+        "S3 bucket for videos",
+        "CloudWatch monitoring"
+      ],
+      "monthly_cost": "$433.95",
+      "breakdown": {
+        "compute": "$384",
+        "storage_ebs": "$28",
+        "storage_s3": "$11.75",
+        "cloudwatch": "$10",
+        "data_transfer": "$0.20"
+      },
+      "use_case": "Single video processing, development",
+      "scalability": "Manual scaling only"
+    },
+
+    "architecture_2_production": {
+      "name": "Production Auto-Scaling",
+      "components": [
+        "2-4x g4dn.xlarge EC2 instances (auto-scaling)",
+        "Application Load Balancer",
+        "EBS storage per instance",
+        "S3 bucket for videos + identity DB",
+        "CloudWatch + Lambda triggers",
+        "API Gateway"
+      ],
+      "monthly_cost_range": "$900 - $1,800",
+      "breakdown": {
+        "compute": "$768 - $1,536 (2-4 instances)",
+        "load_balancer": "$16.20",
+        "storage_ebs": "$56 (2 instances)",
+        "storage_s3": "$20",
+        "cloudwatch": "$20",
+        "lambda": "$5",
+        "api_gateway": "$3.50",
+        "data_transfer": "$30"
+      },
+      "use_case": "Production with variable load",
+      "scalability": "Auto-scaling based on queue depth"
+    },
+
+    "architecture_3_enterprise": {
+      "name": "Enterprise Multi-Region",
+      "components": [
+        "4x g4dn.12xlarge EC2 instances (2 regions)",
+        "Multi-region S3 replication",
+        "RDS PostgreSQL for metadata",
+        "ElastiCache Redis for identity cache",
+        "SageMaker for model management",
+        "Full monitoring + security suite"
+      ],
+      "monthly_cost_range": "$12,000 - $15,000",
+      "breakdown": {
+        "compute": "$11,424 (4x g4dn.12xlarge)",
+        "storage": "$500",
+        "database": "$300",
+        "cache": "$100",
+        "networking": "$500",
+        "sagemaker": "$384",
+        "monitoring": "$100",
+        "security": "$200"
+      },
+      "use_case": "Large-scale, multi-camera, real-time",
+      "scalability": "Fully managed, multi-region failover"
+    }
+  },
+
+  "model_deployment_options": {
+    "option_1_ec2_self_managed": {
+      "name": "Self-Managed EC2",
+      "description": "Deploy models directly on EC2 instances",
+      "pros": [
+        "Full control over environment",
+        "Lower cost for continuous operation",
+        "Custom optimization possible"
+      ],
+      "cons": [
+        "Manual scaling required",
+        "Need to manage infrastructure",
+        "No automatic model versioning"
+      ],
+      "estimated_monthly_cost": "$384 - $2,856"
+    },
+
+    "option_2_sagemaker": {
+      "name": "AWS SageMaker Endpoints",
+      "description": "Managed model deployment with auto-scaling",
+      "instance_options": [
+        {
+          "instance": "ml.g4dn.xlarge",
+          "cost_hourly": "$0.526",
+          "cost_monthly": "$384"
+        },
+        {
+          "instance": "ml.g4dn.2xlarge",
+          "cost_hourly": "$0.752",
+          "cost_monthly": "$549"
+        },
+        {
+          "instance": "ml.g5.xlarge",
+          "cost_hourly": "$1.006",
+          "cost_monthly": "$734"
+        }
+      ],
+      "pros": [
+        "Fully managed",
+        "Auto-scaling built-in",
+        "Model versioning",
+        "A/B testing support",
+        "Monitoring included"
+      ],
+      "cons": [
+        "Higher cost than EC2",
+        "Less flexibility",
+        "Learning curve for deployment"
+      ],
+      "additional_costs": {
+        "inference_requests": "$0.0001 per 1000 requests",
+        "model_storage": "$0.024/GB/month"
+      }
+    },
+
+    "option_3_lambda_batch": {
+      "name": "Lambda + Batch Processing",
+      "description": "Serverless for non-real-time processing",
+      "pricing": {
+        "lambda_per_invocation": "$0.0000002",
+        "compute_gb_second": "$0.0000166667",
+        "estimated_monthly": "$50 - $200"
+      },
+      "pros": [
+        "Pay only for actual usage",
+        "No idle costs",
+        "Automatic scaling"
+      ],
+      "cons": [
+        "15 min timeout limit",
+        "Cold start latency",
+        "Not suitable for real-time"
+      ],
+      "use_case": "Batch video processing, non-urgent tasks"
+    }
+  },
+
+  "cost_optimization_strategies": {
+    "spot_instances": {
+      "description": "Use EC2 Spot instances for up to 70% savings",
+      "savings": "60-70%",
+      "considerations": [
+        "May be interrupted with 2-minute warning",
+        "Best for fault-tolerant workloads",
+        "Use with auto-scaling groups"
+      ],
+      "recommended_for": "Batch processing, non-critical workloads"
+    },
+    "reserved_instances": {
+      "description": "Commit to 1 or 3 years for 40-60% savings",
+      "savings": "40-60%",
+      "1_year": "40% savings",
+      "3_year": "60% savings",
+      "recommended_for": "Stable, predictable workloads"
+    },
+    "savings_plans": {
+      "description": "Flexible commitment for consistent savings",
+      "savings": "up to 72%",
+      "flexibility": "Can switch instance types",
+      "recommended_for": "Growing workloads with changing needs"
+    },
+    "s3_lifecycle": {
+      "description": "Automatically move old data to cheaper storage",
+      "transitions": [
+        "S3 Standard → S3 Infrequent Access after 30 days (50% savings)",
+        "S3 IA → S3 Glacier after 90 days (85% savings)",
+        "Delete after 1 year if not needed"
+      ],
+      "estimated_savings": "$5-10/month per 100GB"
+    }
+  },
+
+  "recommended_configurations": {
+    "startup_budget": {
+      "name": "Startup / Development",
+      "monthly_budget": "$150 - $300",
+      "setup": {
+        "compute": "g4dn.xlarge Spot Instance",
+        "storage": "100GB EBS + 100GB S3",
+        "networking": "Minimal data transfer"
+      },
+      "estimated_cost": "$180/month",
+      "processing_capacity": "~50,000 frames/hour"
+    },
+
+    "small_business": {
+      "name": "Small Business / Production",
+      "monthly_budget": "$500 - $1,000",
+      "setup": {
+        "compute": "1-2x g4dn.xlarge Reserved (1-yr)",
+        "storage": "350GB EBS + 500GB S3",
+        "services": "Load Balancer, CloudWatch, API Gateway"
+      },
+      "estimated_cost": "$680/month",
+      "processing_capacity": "~150,000 frames/hour"
+    },
+
+    "enterprise": {
+      "name": "Enterprise / High-Volume",
+      "monthly_budget": "$2,000 - $5,000",
+      "setup": {
+        "compute": "4x g4dn.2xlarge Reserved (1-yr) or 1x g4dn.12xlarge",
+        "storage": "1TB EBS + 2TB S3",
+        "services": "Full suite (LB, CloudWatch, Lambda, RDS)"
+      },
+      "estimated_cost": "$3,200/month",
+      "processing_capacity": "~500,000 frames/hour"
+    }
+  },
+
+  "model_files_pricing": {
+    "yolov8_model": {
+      "filename": "best.pt",
+      "size_mb": 50,
+      "storage_s3_monthly": "$0.001",
+      "storage_ebs_monthly": "$0.004"
+    },
+    "resnet50_model": {
+      "size_mb": 98,
+      "storage_s3_monthly": "$0.002",
+      "storage_ebs_monthly": "$0.008",
+      "note": "Downloaded from PyTorch hub automatically"
+    },
+    "identity_database": {
+      "size_per_1000_people": "50 MB",
+      "storage_s3_monthly": "$0.001 per 1000 people",
+      "storage_ebs_monthly": "$0.004 per 1000 people"
+    }
+  },
+
+  "estimated_total_costs": {
+    "development_testing": {
+      "scenario": "Development and testing phase",
+      "duration": "3 months",
+      "instance": "g4dn.xlarge Spot",
+      "usage_hours_per_day": 8,
+      "monthly_cost": {
+        "compute": "$115 (spot)",
+        "storage": "$28",
+        "data_transfer": "$5",
+        "total": "$148/month"
+      },
+      "total_3_months": "$444"
+    },
+
+    "production_launch": {
+      "scenario": "Production launch (first year)",
+      "instance": "g4dn.xlarge Reserved 1-yr",
+      "usage": "24/7",
+      "monthly_cost": {
+        "compute": "$230 (reserved)",
+        "storage": "$40",
+        "services": "$35",
+        "data_transfer": "$20",
+        "total": "$325/month"
+      },
+      "upfront_reserved_cost": "$0 (monthly payments)",
+      "total_first_year": "$3,900"
+    },
+
+    "scaling_phase": {
+      "scenario": "Scaling to multiple streams",
+      "instances": "2-4x g4dn.xlarge (auto-scaling)",
+      "average_instances": 3,
+      "monthly_cost": {
+        "compute": "$690 (reserved, 3 instances avg)",
+        "storage": "$75",
+        "services": "$80",
+        "data_transfer": "$50",
+        "total": "$895/month"
+      },
+      "annual_cost": "$10,740"
+    }
+  },
+
+  "migration_steps": {
+    "step_1": "Create AWS account and set up billing alerts",
+    "step_2": "Launch g4dn.xlarge EC2 instance with Deep Learning AMI",
+    "step_3": "Install CUDA, PyTorch, and dependencies",
+    "step_4": "Transfer trained models (best.pt) to EC2",
+    "step_5": "Set up S3 bucket for video input/output",
+    "step_6": "Configure CloudWatch for monitoring",
+    "step_7": "Test with sample videos",
+    "step_8": "Set up auto-scaling if needed",
+    "step_9": "Implement API Gateway for video upload",
+    "step_10": "Monitor costs and optimize"
+  },
+
+  "important_notes": [
+    "All prices in USD as of 2026",
+    "Prices vary by AWS region (us-east-1 used for estimates)",
+    "Data transfer within same region is free",
+    "First 100GB of data transfer out per month is free",
+    "CloudWatch has free tier: 10 metrics, 10 alarms, 1M API requests",
+    "S3 has free tier: 5GB storage, 20,000 GET, 2,000 PUT requests",
+    "Consider using AWS Credits for startups (up to $100,000)",
+    "Spot instances can reduce costs by 60-70% but may be interrupted",
+    "Reserved instances require upfront commitment but save 40-60%"
+  ],
+
+  "next_actions": [
+    "1. Decide on deployment architecture based on budget and scale",
+    "2. Create AWS account if not already done",
+    "3. Set up billing alerts at $100, $300, $500 thresholds",
+    "4. Launch EC2 instance with Deep Learning AMI",
+    "5. Transfer models and code to AWS",
+    "6. Test with small dataset",
+    "7. Monitor performance and costs",
+    "8. Scale up based on actual usage patterns"
+  ]
+}
