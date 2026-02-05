@@ -11,31 +11,45 @@ __pycache__/
 runs/
 outputs/
 
-# Large model files
+# Large model files (you may want to use Git LFS for these)
 weights/
 *.pt
 *.pth
-*.onnx
-
-# Large data files
-annotated_data/
-Input_file/
-*.mp4
-*.avi
-*.mov
-*.pkl
 
 # IDE
 .vscode/
-.vscode-server/
 .idea/
 
 # OS files
 .DS_Store
 Thumbs.db
+.bash_history
+.bashrc
+.bash_logout
+.profile
+
+# System/User files
+.cache/
+.config/
+.ssh/
+.dotnet/
 .wget-hsts
+.vscode-server/
 
 # Temporary files
 *.log
 *.tmp
-.vscode-server/
+*.pkl
+*.pickle
+
+# Video outputs
+*.mp4
+*.avi
+*.mov
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Large datasets
+Input_file/
+annotated_data/
