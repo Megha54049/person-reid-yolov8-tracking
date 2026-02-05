@@ -1,0 +1,13 @@
+names:
+- person
+nc: 1
+path: /home/meghaagrawal940/annotated_data
+roboflow:
+  license: MIT
+  project: staircase-detection
+  url: https://universe.roboflow.com/dataset/staircase
+  version: '1'
+  workspace: person-477
+test: images/val
+train: images/train
+val: images/val

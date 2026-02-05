@@ -1,0 +1,5 @@
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+*.pt filter=lfs diff=lfs merge=lfs -text
+*.pth filter=lfs diff=lfs merge=lfs -text
+annotated_data/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+annotated_data/**/*.png filter=lfs diff=lfs merge=lfs -text

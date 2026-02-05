@@ -7,14 +7,8 @@ __pycache__/
 *.pyd
 .Python
 
-# YOLOv8 outputs
-runs/
-outputs/
-
-# Large model files (you may want to use Git LFS for these)
-weights/
-*.pt
-*.pth
+# YOLOv8 outputs (training runs only)
+runs/detect/runs/
 
 # IDE
 .vscode/
@@ -37,19 +31,12 @@ Thumbs.db
 .vscode-server/
 
 # Temporary files
-*.log
 *.tmp
 *.pkl
 *.pickle
 
-# Video outputs
-*.mp4
-*.avi
-*.mov
-
 # Jupyter
 .ipynb_checkpoints/
 
-# Large datasets
-Input_file/
-annotated_data/
+# Git configuration
+.gitconfig
